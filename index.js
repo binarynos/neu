@@ -8,9 +8,8 @@ const ytch = require('yt-channel-info')
 const ytcm = require("@freetube/yt-comment-scraper")
 const xml2vtt = require('yt-xml2vtt')
 const ytpl = require("ytpl")
-const host = process.env.HOST || "http://localhost"
 const port = process.env.PORT || 8000
-const apiBase = `${host}:${port}`
+const apiBase = process.env.HOST || `http://localhost:${port}`
 const devMode = true
 
 const httpsGet = (url) => new Promise((resolve, reject) => {
