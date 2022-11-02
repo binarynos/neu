@@ -3,16 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "api": "node proxy.mjs"
+    "api": " node proxy.mjs"
   },
   "dependencies": {
-    "@freetube/yt-comment-scraper": "^6.1.0",
-    "@freetube/yt-dash-manifest-generator": "^1.1.0",
+    "@freetube/yt-comment-scraper": "^6.2.0",
+    "@freetube/yt-dash-manifest-generator": "^1.1.1",
     "@freetube/yt-trending-scraper": "github:FreeTubeApp/yt-trending-scraper",
-    "cors-anywhere": "^0.4.4",
-    "yt-channel-info": "^3.0.3",
+    "yt-channel-info": "^3.2.1",
     "yt-trending-scraper": "^2.0.1",
-    "yt-xml2vtt": "^1.2.0",
+    "yt-xml2vtt": "^1.2.1",
     "ytdl-core": "^4.11.2",
     "ytpl": "^2.3.0",
     "ytsr": "^3.8.0"
