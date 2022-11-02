@@ -128,12 +128,13 @@ async function handleVideoReq(videoId) {
 		delete info.response
 		delete info.formats
 		const proxy = `${apiBase}/proxy?url=`
-		dash = dash.replaceAll("https://", `${proxy}https://`)
+		// replaceAll isn't supported everywhere
+		dash = dash.replace(/https:\/\//gi, `${proxy}https://`)
 		dash = dash.split("</Period>")[0]
 		const getCaptions = (captions) => {
 			let str = ``
 			captions.forEach(caption => {
-				str += `<AdaptationSet mimeType="text/vtt" lang="${caption.languageCode}"><Representation id="caption" bandwidth="123"><BaseURL>${apiBase}/api/captions?url=${caption.baseUrl.replaceAll("&", "&amp;")}</BaseURL></Representation></AdaptationSet>`
+				str += `<AdaptationSet mimeType="text/vtt" lang="${caption.languageCode}"><Representation id="caption" bandwidth="123"><BaseURL>${apiBase}/api/captions?url=${caption.baseUrl.replace(/&/gi, "&amp;")}</BaseURL></Representation></AdaptationSet>`
 			})
 			return str
 		}
