@@ -26,21 +26,28 @@ const listener = async (req, res) => {
             res.end("Required parameter missing.");
             return;
         }
-        const proxyRequest = https.request(url.search.replace("?url=", ""), {
+        const headers = {
             // ideally, all? headers in the original request should be passed to the proxyRequest
-            headers: {
-                ...req.headers,
-                host: ""
-                // "range": req.headers.range || "bytes=0-"
-            }
-        }, proxyResponse => {
-            logger(proxyResponse.statusCode);
-            res.statusCode = proxyResponse.statusCode;
-            res.setHeader("access-control-allow-origin", "*");
-            proxyResponse.pipe(res, { end: true });
-            // proxyResponse.on("close", () => res.end())
-        });
-        proxyRequest.end();
+            ...req.headers,
+            host: ""
+            // "range": req.headers.range || "bytes=0-"
+        };
+        const get = (url) => {
+            return new Promise((resolve, reject) => {
+                https.request(url, { headers }, response => {
+                    resolve(response);
+                }).on("error", e => reject()).end();
+            });
+        };
+        let redirects = 0;
+        let response = await get(url.search.replace("?url=", ""));
+        while (response.headers.location && redirects < 10) {
+            response = await get(response.headers.location);
+            redirects++;
+        }
+        res.statusCode = response.statusCode;
+        res.setHeader("access-control-allow-origin", "*");
+        response.pipe(res, { end: true });
     }
     else {
         res.statusCode = 404;
