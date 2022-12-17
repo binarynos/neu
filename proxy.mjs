@@ -1,7 +1,9 @@
 import * as http from "http";
 import * as https from "https";
-const port = process.env.PORT || 8000;
-const log = process.env.LOG || false;
+import * as dotenv from 'dotenv'
+dotenv.config()
+const port = parseInt(process.env.PORT || "8000")
+const log = process.env.LOG === "true";
 import { handleRequest, URLParser } from "./index.js";
 const server = http.createServer();
 // follow redirects
