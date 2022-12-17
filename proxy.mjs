@@ -1,12 +1,13 @@
 import * as http from "http";
 import * as https from "https";
 const port = process.env.PORT || 8000;
-const log = false;
+const log = process.env.LOG || false;
 import { handleRequest, URLParser } from "./index.js";
 const server = http.createServer();
 // follow redirects
 // chrome issues panel shows error "Ensure preflight responses are valid", because the server doesn't respond to the preflight OPTIONS request, see https://web.dev/cross-origin-resource-sharing/#preflight-requests-for-complex-http-calls
 const listener = async (req, res) => {
+    logger(`[Request]: ${req.url}`)
     if (req.url?.startsWith("/api")) {
         const url = URLParser(new URL(req.url, `http://${req.headers.host}`));
         const { statusCode, data } = await handleRequest(url);
@@ -19,7 +20,6 @@ const listener = async (req, res) => {
     }
     else if (req.url?.startsWith("/proxy")) {
         const url = (new URL(req.url, `http://${req.headers.host}`));
-        logger(url, req.url);
         const urlToGet = new URLSearchParams(url.search).get("url");
         if (!urlToGet) {
             res.statusCode = 400;
@@ -45,8 +45,8 @@ const listener = async (req, res) => {
             response = await get(response.headers.location);
             redirects++;
         }
-        res.statusCode = response.statusCode;
         res.setHeader("access-control-allow-origin", "*");
+        res.writeHead(response.statusCode, response.headers)
         response.pipe(res, { end: true });
     }
     else {
